@@ -1,0 +1,50 @@
+// Node.js architecture to handle process
+
+
+Request >> Event Queue >> Event Loop >> Thread Pool >> Response
+
+Requests: The request have two type that is blocking and non-blocking
+
+Event Queue: To handle the request that are coming and process as queue data structure that is first in first out
+
+Event Loop: It will check for requests in th event queue, when it get then assign it to the thread or worker to process it
+
+Thread Pool: It is a pool of worker or thread that are freed after completing a process to perform further operation
+
+
+Work Flow: 
+Firstly, number of request is coming to event queue then the event loop will check the request type in FIFO manner if the type is non-blocking sync operation then it will process it, if not then go the thread pool to check the thread or worker is available or not because threads are limited (4). When thread got the task to process then it will process it and then return as response and become available in thread pool for further task.
+
+
+Example of blocking and non-blocking operation:
+
+1. Blocking or synchronous operation
+
+console.log("1");
+const result = fs.readFileSync("hello.txt","utf-8");
+console.log(result);
+console.log("2");
+
+Here, the program will print 1 then read the file hello.txt during this process it will not print 2 after the completion of reading the file then it will print 2
+
+output:
+  1
+  helloWorld
+  2
+
+2. Non-Blocking or asynchronous operation
+
+console.log("1");
+fs.readFileSync("hello.txt","utf-8", (err, result)=> {
+  console.log(result);
+});
+console.log("2");
+
+
+output:
+  1
+  2
+  helloWorld
+
+
+The default size of thread pool is 4, but we can extend as per our CPU core for example if we have CPU of having 8 core then thread pool will extend at max 8
